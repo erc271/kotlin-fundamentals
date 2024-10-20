@@ -13,17 +13,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.project.ui.theme.ProjectTheme
 
-class BusinessActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -34,7 +32,6 @@ class BusinessActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     GreetingImage(
-                        from = "Essaouira",
                         modifier = Modifier.padding(8.dp)
                     )
                 }
@@ -44,54 +41,63 @@ class BusinessActivity : ComponentActivity() {
 }
 
 @Composable
-fun GreetingText(from: String, modifier: Modifier = Modifier) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = from,
-            fontSize = 36.sp,
-            modifier = Modifier.padding(16.dp)
-        )
-        Text(
-            text = "Essaouira is a charming coastal city in Morocco, known for its UNESCO-listed medina, 18th-century ramparts, and vibrant harbor.",
-            fontSize = 25.sp,
-            lineHeight = 30.sp,
-            modifier = Modifier.padding(16.dp)
-        )
-    }
-}
+fun GreetingImage(modifier: Modifier = Modifier) {
+    // List of image resources, titles, and descriptions to randomly choose from
+    val imageList = listOf(
+        Triple(R.drawable.essaouira, "Essaouira", "Essaouira is a charming coastal city in Morocco."),
+        Triple(R.drawable.essaouira_3, "Essaouira Harbor", "The harbor of Essaouira is famous for its fishing industry."),
+        Triple(R.drawable.essaouira_4, "Ramparts of Essaouira", "The 18th-century ramparts surround the medina of Essaouira.")
+    )
 
-@Composable
-fun GreetingImage(from: String, modifier: Modifier = Modifier) {
-    // List of image resources to randomly choose from
-    val imageList = listOf(R.drawable.essaouira, R.drawable.essaouira_3, R.drawable.essaouira_4)
+    // Remember the current image, title, and description
+    var currentImage by remember { mutableStateOf(imageList[0]) }
 
-    // Remember the current image and initialize with the first image in the list
-    var currentImage by remember { mutableStateOf(R.drawable.essaouira) }
-
-    Box(modifier) {
-        // Image is clickable, changing the image on click
+    Box(modifier = modifier.fillMaxSize()) {
+        // Constant background image
         Image(
-            painter = painterResource(id = currentImage),
+            painter = painterResource(id = R.drawable.travel), // Replace with your constant background image
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            alpha = 0.5F,
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable {
-                    // Randomly choose a new image from the list
-                    currentImage = imageList.random()
-                }
+            modifier = Modifier.fillMaxSize() // Full background
         )
-        GreetingText(
-            from = from,
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(8.dp)
-        )
+                .align(Alignment.Center)
+                .padding(16.dp)
+        ) {
+            // Foreground image with white border that changes on click
+            Image(
+                painter = painterResource(id = currentImage.first),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(250.dp) // Adjust size as needed
+                    .border(4.dp, Color.White) // White border
+                    .clickable {
+                        // Randomly choose a new image from the list
+                        currentImage = imageList.random()
+                    }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Title text below the image
+            Text(
+                text = currentImage.second,
+                fontSize = 24.sp,
+                color = Color.White // Adjust color as needed
+            )
+
+            // Description text below the title
+            Text(
+                text = currentImage.third,
+                fontSize = 16.sp,
+                color = Color.White, // Adjust color as needed
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }
 
@@ -99,8 +105,6 @@ fun GreetingImage(from: String, modifier: Modifier = Modifier) {
 @Composable
 fun BirthdayCardPreview() {
     ProjectTheme {
-        GreetingImage(
-            from = "Essaouira"
-        )
+        GreetingImage()
     }
 }
